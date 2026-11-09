@@ -15,7 +15,7 @@ Prasyarat: **Node.js 22.13 atau lebih baru** (untuk `node:sqlite`). Tidak perlu 
 npm start            # lalu buka http://localhost:3000
 ```
 
-Pertama kali dijalankan, basis data dibuat dan diisi otomatis (6 gedung, 55 ruangan, 311 fasilitas, jadwal 14 hari, 12 laporan contoh).
+Pertama kali dijalankan, basis data dibuat dan diisi otomatis (8 gedung, 36 ruangan, 208 fasilitas, jadwal 14 hari, 12 laporan contoh).
 
 | Perintah | Fungsi |
 |---|---|

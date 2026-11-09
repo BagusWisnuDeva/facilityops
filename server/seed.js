@@ -9,11 +9,11 @@ import { fmtDate, fmtDateTime, addDays, addMinutes, pad, toMinutes, fromMinutes 
 // ---------------------------------------------------------------- Data master
 const USERS = [
   { nama: 'Admin fasilitas', panggilan: 'Admin', email: 'admin@unud.ac.id', pw: 'admin123', peran: 'admin' },
-  { nama: 'Wayan Sudarma', email: 'wayan.sudarma@unud.ac.id', pw: 'teknisi123', peran: 'teknisi', spesialisasi: 'Teknisi elektronik' },
-  { nama: 'Ketut Arta', email: 'ketut.arta@unud.ac.id', pw: 'teknisi123', peran: 'teknisi', spesialisasi: 'Teknisi AC' },
-  { nama: 'Komang Putra', email: 'komang.putra@unud.ac.id', pw: 'teknisi123', peran: 'teknisi', spesialisasi: 'Teknisi furnitur dan bangunan' },
-  { nama: 'Nyoman Adi', email: 'nyoman.adi@unud.ac.id', pw: 'teknisi123', peran: 'teknisi', spesialisasi: 'Teknisi plumbing' },
-  { nim: '2508561005', nama: 'I Made Bagus Wisnu Deva Manik', panggilan: 'Wisnu', email: 'manik.2508561005@student.unud.ac.id', pw: 'mahasiswa123', peran: 'pengguna' },
+  { nama: 'Wayan Sudarma', email: 'wayan@unud.ac.id', pw: 'teknisi123', peran: 'teknisi', spesialisasi: 'Teknisi elektronik' },
+  { nama: 'Ketut Arta', email: 'ketut@unud.ac.id', pw: 'teknisi123', peran: 'teknisi', spesialisasi: 'Teknisi AC' },
+  { nama: 'Komang Putra', email: 'komang@unud.ac.id', pw: 'teknisi123', peran: 'teknisi', spesialisasi: 'Teknisi furnitur dan bangunan' },
+  { nama: 'Nyoman Adi', email: 'nyoman@unud.ac.id', pw: 'teknisi123', peran: 'teknisi', spesialisasi: 'Teknisi plumbing' },
+  { nim: '2508561005', nama: 'I Made Bagus Wisnu Deva Manik', panggilan: 'Wisnu', email: '2508561005@student.unud.ac.id', pw: 'mahasiswa123', peran: 'pengguna' },
   { nim: '2508561001', nama: 'Pande Putu Agus Diva Surya Dinata. L.', panggilan: 'Diva', email: '2508561001@student.unud.ac.id', pw: 'mahasiswa123', peran: 'pengguna' },
   { nim: '2508561010', nama: 'I Gusti Kadek Bagus Angga Saputra', panggilan: 'Angga', email: '2508561010@student.unud.ac.id', pw: 'mahasiswa123', peran: 'pengguna' },
   { nim: '2508561148', nama: 'Luthfi Hanafi', panggilan: 'Luthfi', email: '2508561148@student.unud.ac.id', pw: 'mahasiswa123', peran: 'pengguna' },
@@ -27,7 +27,7 @@ const FAC = {
   seminar: [['Proyektor', 'Elektronik'], ['Sound system', 'Elektronik'], ['AC split', 'Pendingin Udara'], ['Kursi lipat', 'Furnitur'], ['Lampu ruangan', 'Listrik']],
   diskusi: [['Papan tulis', 'Furnitur'], ['AC split', 'Pendingin Udara'], ['Lampu ruangan', 'Listrik'], ['Meja diskusi', 'Furnitur'], ['Stop kontak', 'Listrik']],
   rapat: [['Layar TV', 'Elektronik'], ['AC split', 'Pendingin Udara'], ['Meja rapat', 'Furnitur'], ['Lampu ruangan', 'Listrik']],
-  aula: [['Sound system', 'Elektronik'], ['Lampu sorot', 'Listrik'], ['AC central', 'Pendingin Udara'], ['Kursi aula', 'Furnitur'], ['Panggung', 'Bangunan']],
+  aula: [['Sound system', 'Elektronik'], ['Lampu sorot', 'Listrik'], ['AC central', 'Pendingin Udara'], ['Kursi aula', 'Furnitur'], ['Panggung', 'Bangunan'], ['Wastafel', 'Plumbing']],
   baca: [['Rak buku', 'Furnitur'], ['Meja baca', 'Furnitur'], ['AC split', 'Pendingin Udara'], ['Lampu ruangan', 'Listrik'], ['Stop kontak', 'Listrik']],
   multimedia: [['Komputer', 'Elektronik'], ['Headset', 'Elektronik'], ['AC split', 'Pendingin Udara'], ['Lampu ruangan', 'Listrik']],
   kecil: [['Sofa', 'Furnitur'], ['AC split', 'Pendingin Udara'], ['Lampu ruangan', 'Listrik'], ['Stop kontak', 'Listrik']],
@@ -35,62 +35,63 @@ const FAC = {
 
 function roomKind(nama) {
   const n = nama.toLowerCase();
-  if (n.includes('lab komputer') || n.includes('lab jaringan') || n.includes('lab basis data') || n.includes('lab multimedia')) return 'labkomp';
-  if (n.startsWith('lab ') || n.includes('instrumen')) return 'lab';
-  if (n.includes('seminar')) return 'seminar';
-  if (n.includes('rapat')) return 'rapat';
+  if (n.includes('lab komputer')) return 'labkomp';
+  if (n.startsWith('lab ')) return 'lab';
   if (n.includes('aula')) return 'aula';
-  if (n.includes('diskusi')) return 'diskusi';
-  if (n.includes('multimedia')) return 'multimedia';
-  if (n.includes('baca') || n.includes('referensi') || n.includes('koleksi')) return 'baca';
-  if (n.includes('transit') || n.includes('panitia')) return 'kecil';
+  if (n.includes('nusantara') || n.includes('bangsa')) return 'seminar';
+  if (n.includes('meeting') || n.includes('rapat')) return 'rapat';
+  if (n.startsWith('lantai ')) return 'baca';
   return 'kuliah';
 }
 
 // [nama, nomor, lantai, kapasitas, status]
-const KULIAH_GKB = [];
-for (let lt = 1; lt <= 4; lt++) for (let i = 1; i <= 4; i++) KULIAH_GKB.push([`Ruang Kuliah ${lt}.0${i}`, `${lt}.0${i}`, lt, 60 + ((lt + i) % 4) * 20, ['tersedia', 'tersedia', 'digunakan', 'dibooking'][(lt * 3 + i) % 4]]);
+const RUANG_LB = [];
+const STATUS_LB = ['tersedia', 'digunakan', 'tersedia', 'dibooking'];
+for (let i = 1; i <= 12; i++) RUANG_LB.push([`Ruang A 2.${i}`, `2.${i}`, 2, 30, STATUS_LB[i % 4]]);
+RUANG_LB.push(['Aula LB', 'Aula', 3, 200, 'tersedia']);
 
 const BUILDINGS = [
-  { nama: 'Gedung Teknik A', ket: 'Gedung perkuliahan Fakultas Teknik dan laboratorium komputer', lantai: 4, warna: 'blue', rooms: [
-    ['Ruang Kuliah 3.02', '3.02', 3, 40, 'tersedia'], ['Ruang Kuliah 3.03', '3.03', 3, 40, 'digunakan'], ['Ruang Seminar 3.04', '3.04', 3, 60, 'dibooking'],
-    ['Lab Komputer 2.01', '2.01', 2, 30, 'tersedia'], ['Lab Jaringan 2.02', '2.02', 2, 28, 'digunakan'], ['Ruang Diskusi 2.05', '2.05', 2, 15, 'tersedia'],
-    ['Ruang Kuliah 1.01', '1.01', 1, 80, 'dibooking'], ['Ruang Kuliah 1.02', '1.02', 1, 80, 'tersedia'], ['Lab Multimedia 2.03', '2.03', 2, 24, 'tersedia'],
-    ['Ruang Kuliah 4.01', '4.01', 4, 50, 'tersedia'], ['Ruang Kuliah 4.02', '4.02', 4, 50, 'digunakan'], ['Ruang Rapat 4.03', '4.03', 4, 20, 'tersedia'],
+  { nama: 'Gedung Dekanat FMIPA', ket: 'Ruang kuliah dan laboratorium komputer Fakultas MIPA', lantai: 4, warna: 'blue', rooms: [
+    ['Ruang 1.1', '1.1', 1, 25, 'tersedia'], ['Ruang 1.2', '1.2', 1, 25, 'digunakan'], ['Ruang 1.3', '1.3', 1, 25, 'tersedia'], ['Ruang 1.4', '1.4', 1, 20, 'tersedia'],
+    ['Ruang 2.1', '2.1', 2, 25, 'dibooking'], ['Ruang 2.2', '2.2', 2, 25, 'tersedia'], ['Ruang 2.3', '2.3', 2, 25, 'digunakan'], ['Ruang 2.4', '2.4', 2, 40, 'tersedia'],
+    ['Ruang 3.1', '3.1', 3, 25, 'tersedia'], ['Ruang 3.2', '3.2', 3, 25, 'tersedia'], ['Ruang 3.3', '3.3', 3, 25, 'dibooking'],
+    ['Lab Komputer 1', 'LK1', 3, 50, 'tersedia'], ['Lab Komputer 2', 'LK2', 3, 60, 'digunakan'],
   ] },
-  { nama: 'Gedung Teknik B', ket: 'Ruang kuliah, laboratorium elektronika dan fisika dasar', lantai: 3, warna: 'green', rooms: [
-    ['Ruang Kuliah 1.01', '1.01', 1, 60, 'tersedia'], ['Ruang Kuliah 1.02', '1.02', 1, 60, 'digunakan'], ['Ruang Kuliah 1.03', '1.03', 1, 60, 'tersedia'], ['Ruang Kuliah 1.04', '1.04', 1, 50, 'tersedia'],
-    ['Lab Elektronika 2.01', '2.01', 2, 30, 'tersedia'], ['Lab Fisika Dasar 2.02', '2.02', 2, 32, 'dibooking'], ['Ruang Kuliah 2.03', '2.03', 2, 50, 'tersedia'], ['Ruang Kuliah 2.04', '2.04', 2, 50, 'digunakan'],
-    ['Ruang Diskusi 3.01', '3.01', 3, 16, 'tersedia'], ['Ruang Seminar 3.02', '3.02', 3, 70, 'tersedia'],
+  { nama: 'Gedung AS', ket: 'Gedung perkuliahan satu lantai', lantai: 1, warna: 'green', rooms: [
+    ['Ruang Kelas', '1.1', 1, 80, 'tersedia'],
   ] },
-  { nama: 'Laboratorium Terpadu', ket: 'Laboratorium sains, riset, dan rekayasa', lantai: 2, warna: 'orange', rooms: [
-    ['Lab Biologi 1.01', '1.01', 1, 30, 'tersedia'], ['Lab Kimia 1.02', '1.02', 1, 30, 'digunakan'], ['Lab Fisika 1.03', '1.03', 1, 30, 'tersedia'], ['Lab Komputer 1.04', '1.04', 1, 40, 'tersedia'],
-    ['Lab Riset 2.01', '2.01', 2, 20, 'dibooking'], ['Lab Basis Data 2.02', '2.02', 2, 30, 'tersedia'], ['Lab Robotika 2.03', '2.03', 2, 25, 'tersedia'], ['Ruang Instrumen 2.04', '2.04', 2, 12, 'tersedia'],
+  { nama: 'Gedung BG', ket: 'Gedung perkuliahan dua lantai', lantai: 2, warna: 'orange', rooms: [
+    ['Ruang BG 1.1', '1.1', 1, 40, 'tersedia'], ['Ruang BG 1.2', '1.2', 1, 40, 'digunakan'],
   ] },
-  { nama: 'Perpustakaan', ket: 'Perpustakaan pusat dan ruang belajar bersama', lantai: 3, warna: 'purple', rooms: [
-    ['Ruang Baca Utama', '1.01', 1, 100, 'tersedia'], ['Ruang Diskusi 1', '2.01', 2, 12, 'tersedia'], ['Ruang Diskusi 2', '2.02', 2, 12, 'digunakan'],
-    ['Ruang Multimedia', '2.03', 2, 20, 'tersedia'], ['Ruang Referensi', '3.01', 3, 40, 'tersedia'], ['Ruang Koleksi Khusus', '3.02', 3, 15, 'dibooking'],
+  { nama: 'Gedung LB', ket: 'Ruang kuliah lantai 2 dan aula lantai 3', lantai: 3, warna: 'teal', rooms: RUANG_LB },
+  { nama: 'Gedung Widya Sabha', ket: 'Aula untuk acara besar dan kegiatan kampus', lantai: 3, warna: 'pink', rooms: [
+    ['Aula Widya Sabha', 'Aula', 1, 500, 'tersedia'],
   ] },
-  { nama: 'Gedung Kuliah Bersama', ket: 'Ruang kuliah bersama lintas program studi', lantai: 4, warna: 'teal', rooms: KULIAH_GKB },
-  { nama: 'Aula Utama', ket: 'Aula untuk acara besar dan kegiatan kampus', lantai: 2, warna: 'pink', rooms: [
-    ['Aula Utama', '1.01', 1, 500, 'tersedia'], ['Ruang Transit', '1.02', 1, 20, 'tersedia'], ['Ruang Panitia', '2.01', 2, 30, 'digunakan'],
+  { nama: 'Gedung Agrokompleks', ket: 'Gedung Agrokompleks dengan ruang pertemuan besar', lantai: 4, warna: 'green', rooms: [
+    ['Ruang Nusantara', 'Nusantara', 4, 200, 'tersedia'],
+  ] },
+  { nama: 'Gedung Rektorat', ket: 'Gedung administrasi pusat universitas', lantai: 3, warna: 'blue', rooms: [
+    ['Ruang Bangsa', 'Bangsa', 3, 150, 'dibooking'],
+  ] },
+  { nama: 'Perpustakaan Tengah Kampus Jimbaran', ket: 'Perpustakaan pusat dan ruang belajar bersama', lantai: 3, warna: 'purple', rooms: [
+    ['Lantai 1', 'L1', 1, 30, 'tersedia'], ['Lantai 2', 'L2', 2, 50, 'digunakan'], ['Room Meeting', 'RM', 2, 15, 'tersedia'], ['Lantai 3', 'L3', 3, 50, 'tersedia'],
   ] },
 ];
 
 // Laporan contoh. Format ruangan: [nama gedung, nomor ruangan].
 const REPORTS = [
-  { g: 'Gedung Teknik A', n: '3.02', f: 'Proyektor', judul: 'Proyektor tidak menyala', desk: 'Proyektor tidak menyala saat dicoba dari awal perkuliahan. Kabel daya sudah dicek dan masih terpasang.', kat: 'Elektronik', tk: 'sedang', st: 'menunggu', by: 'Wisnu', ago: 95 },
-  { g: 'Perpustakaan', n: '2.01', f: 'Lampu ruangan', judul: 'Lampu berkedip', desk: 'Lampu di atas meja diskusi berkedip terus dan kadang mati sendiri.', kat: 'Listrik', tk: 'sedang', st: 'diperbaiki', by: 'Wisnu', ago: 3 * 1440, tek: 'Wayan Sudarma', tind: 'Mengganti balast lampu. Instalasi kabel masih dicek ulang.' },
-  { g: 'Perpustakaan', n: '2.01', f: 'AC split', judul: 'AC bocor', desk: 'AC meneteskan air ke lantai dan area meja sehingga basah.', kat: 'Pendingin Udara', tk: 'sedang', st: 'selesai', by: 'Wisnu', ago: 14 * 1440, tek: 'Ketut Arta', done: 13 * 1440, tind: 'Membersihkan saluran pembuangan dan mengganti pipa drain yang tersumbat.' },
-  { g: 'Gedung Teknik A', n: '2.01', f: 'AC split', judul: 'AC tidak dingin dan berisik', desk: 'AC tidak mengeluarkan udara dingin dan menimbulkan bunyi keras saat dinyalakan.', kat: 'Pendingin Udara', tk: 'berat', st: 'menunggu', by: 'Angga', ago: 300 },
-  { g: 'Gedung Teknik B', n: '1.04', f: 'Stop kontak', judul: 'Stop kontak longgar', desk: 'Stop kontak dekat pintu longgar dan sering memutus aliran listrik.', kat: 'Listrik', tk: 'ringan', st: 'menunggu', by: 'Diva', ago: 1440 + 120 },
-  { g: 'Gedung Teknik A', n: '3.02', f: 'Kursi kuliah', judul: 'Kursi kuliah patah', desk: 'Dua kursi kuliah di barisan belakang patah pada bagian sandaran.', kat: 'Furnitur', tk: 'sedang', st: 'diperbaiki', by: 'Luthfi', ago: 2 * 1440, tek: 'Komang Putra', tind: 'Kursi dibawa ke bengkel untuk pengelasan ulang.' },
-  { g: 'Gedung Teknik B', n: '1.02', f: 'Papan tulis', judul: 'Papan tulis lepas', desk: 'Papan tulis lepas dari dinding di bagian pojok kanan atas.', kat: 'Furnitur', tk: 'sedang', st: 'selesai', by: 'Diva', ago: 33 * 1440, tek: 'Komang Putra', done: 31 * 1440, tind: 'Memasang ulang papan tulis dengan baut dan dudukan baru.' },
-  { g: 'Gedung Teknik A', n: '2.01', f: 'Komputer', judul: 'Komputer tidak bisa menyala', desk: 'Satu unit komputer di barisan depan tidak bisa menyala meski kabel power sudah diganti.', kat: 'Elektronik', tk: 'sedang', st: 'ditugaskan', by: 'Angga', ago: 1440 + 30, tek: 'Wayan Sudarma' },
-  { g: 'Gedung Teknik B', n: '2.03', f: 'Proyektor', judul: 'Proyektor buram', desk: 'Gambar proyektor buram dan terlihat bercak gelap di sisi kiri layar.', kat: 'Elektronik', tk: 'ringan', st: 'selesai', by: 'Diva', ago: 22 * 1440, tek: 'Wayan Sudarma', done: 20 * 1440, tind: 'Membersihkan lensa dan filter udara, mengganti lampu proyektor.' },
-  { g: 'Gedung Kuliah Bersama', n: '2.02', f: 'Stop kontak', judul: 'Stop kontak mati', desk: 'Seluruh stop kontak di sisi kanan ruangan tidak mengalirkan listrik.', kat: 'Listrik', tk: 'sedang', st: 'selesai', by: 'Luthfi', ago: 9 * 1440, tek: 'Wayan Sudarma', done: 8 * 1440, tind: 'Mengganti MCB yang turun dan memperbaiki sambungan kabel.' },
-  { g: 'Laboratorium Terpadu', n: '1.02', f: 'Wastafel', judul: 'Keran wastafel bocor', desk: 'Keran wastafel bocor terus-menerus walaupun sudah ditutup rapat.', kat: 'Plumbing', tk: 'ringan', st: 'selesai', by: 'Angga', ago: 40 * 1440, tek: 'Nyoman Adi', done: 38 * 1440, tind: 'Mengganti keran dan seal karet pada sambungan pipa.' },
-  { g: 'Gedung Kuliah Bersama', n: '3.01', f: 'AC split', judul: 'AC terasa terlalu panas', desk: 'AC dinyalakan tetapi ruangan terasa panas sepanjang perkuliahan.', kat: 'Pendingin Udara', tk: 'ringan', st: 'ditolak', by: 'Diva', ago: 6 * 1440, catatan: 'Setelah dicek, AC berfungsi normal. Suhu hanya perlu diatur ulang pada remote.' },
+  { g: 'Gedung Dekanat FMIPA', n: '1.1', f: 'Proyektor', judul: 'Proyektor tidak menyala', desk: 'Proyektor tidak menyala saat dicoba dari awal perkuliahan. Kabel daya sudah dicek dan masih terpasang.', kat: 'Elektronik', tk: 'sedang', st: 'menunggu', by: 'Wisnu', ago: 95 },
+  { g: 'Perpustakaan Tengah Kampus Jimbaran', n: 'L2', f: 'Lampu ruangan', judul: 'Lampu berkedip', desk: 'Lampu di atas meja diskusi berkedip terus dan kadang mati sendiri.', kat: 'Listrik', tk: 'sedang', st: 'diperbaiki', by: 'Wisnu', ago: 3 * 1440, tek: 'Wayan Sudarma', tind: 'Mengganti balast lampu. Instalasi kabel masih dicek ulang.' },
+  { g: 'Perpustakaan Tengah Kampus Jimbaran', n: 'L2', f: 'AC split', judul: 'AC bocor', desk: 'AC meneteskan air ke lantai dan area meja sehingga basah.', kat: 'Pendingin Udara', tk: 'sedang', st: 'selesai', by: 'Wisnu', ago: 14 * 1440, tek: 'Ketut Arta', done: 13 * 1440, tind: 'Membersihkan saluran pembuangan dan mengganti pipa drain yang tersumbat.' },
+  { g: 'Gedung Dekanat FMIPA', n: 'LK1', f: 'AC split', judul: 'AC tidak dingin dan berisik', desk: 'AC tidak mengeluarkan udara dingin dan menimbulkan bunyi keras saat dinyalakan.', kat: 'Pendingin Udara', tk: 'berat', st: 'menunggu', by: 'Angga', ago: 300 },
+  { g: 'Gedung LB', n: '2.1', f: 'Stop kontak', judul: 'Stop kontak longgar', desk: 'Stop kontak dekat pintu longgar dan sering memutus aliran listrik.', kat: 'Listrik', tk: 'ringan', st: 'menunggu', by: 'Diva', ago: 1440 + 120 },
+  { g: 'Gedung Dekanat FMIPA', n: '1.1', f: 'Kursi kuliah', judul: 'Kursi kuliah patah', desk: 'Dua kursi kuliah di barisan belakang patah pada bagian sandaran.', kat: 'Furnitur', tk: 'sedang', st: 'diperbaiki', by: 'Luthfi', ago: 2 * 1440, tek: 'Komang Putra', tind: 'Kursi dibawa ke bengkel untuk pengelasan ulang.' },
+  { g: 'Gedung Dekanat FMIPA', n: '1.2', f: 'Papan tulis', judul: 'Papan tulis lepas', desk: 'Papan tulis lepas dari dinding di bagian pojok kanan atas.', kat: 'Furnitur', tk: 'sedang', st: 'selesai', by: 'Diva', ago: 33 * 1440, tek: 'Komang Putra', done: 31 * 1440, tind: 'Memasang ulang papan tulis dengan baut dan dudukan baru.' },
+  { g: 'Gedung Dekanat FMIPA', n: 'LK1', f: 'Komputer', judul: 'Komputer tidak bisa menyala', desk: 'Satu unit komputer di barisan depan tidak bisa menyala meski kabel power sudah diganti.', kat: 'Elektronik', tk: 'sedang', st: 'ditugaskan', by: 'Angga', ago: 1440 + 30, tek: 'Wayan Sudarma' },
+  { g: 'Gedung BG', n: '1.1', f: 'Proyektor', judul: 'Proyektor buram', desk: 'Gambar proyektor buram dan terlihat bercak gelap di sisi kiri layar.', kat: 'Elektronik', tk: 'ringan', st: 'selesai', by: 'Diva', ago: 22 * 1440, tek: 'Wayan Sudarma', done: 20 * 1440, tind: 'Membersihkan lensa dan filter udara, mengganti lampu proyektor.' },
+  { g: 'Gedung AS', n: '1.1', f: 'Stop kontak', judul: 'Stop kontak mati', desk: 'Seluruh stop kontak di sisi kanan ruangan tidak mengalirkan listrik.', kat: 'Listrik', tk: 'sedang', st: 'selesai', by: 'Luthfi', ago: 9 * 1440, tek: 'Wayan Sudarma', done: 8 * 1440, tind: 'Mengganti MCB yang turun dan memperbaiki sambungan kabel.' },
+  { g: 'Gedung Widya Sabha', n: 'Aula', f: 'Wastafel', judul: 'Keran wastafel bocor', desk: 'Keran wastafel di sisi panggung bocor terus-menerus walaupun sudah ditutup rapat.', kat: 'Plumbing', tk: 'ringan', st: 'selesai', by: 'Angga', ago: 40 * 1440, tek: 'Nyoman Adi', done: 38 * 1440, tind: 'Mengganti keran dan seal karet pada sambungan pipa.' },
+  { g: 'Gedung Dekanat FMIPA', n: '2.2', f: 'AC split', judul: 'AC terasa terlalu panas', desk: 'AC dinyalakan tetapi ruangan terasa panas sepanjang perkuliahan.', kat: 'Pendingin Udara', tk: 'ringan', st: 'ditolak', by: 'Diva', ago: 6 * 1440, catatan: 'Setelah dicek, AC berfungsi normal. Suhu hanya perlu diatur ulang pada remote.' },
 ];
 
 // ---------------------------------------------------------------- Foto contoh (SVG)
@@ -142,7 +143,7 @@ export function seedAll(db) {
         const rid = Number(insR.run(gid, nama, nomor, lantai, kap, status).lastInsertRowid);
         ids.room[`${b.nama}|${nomor}`] = rid;
         let tpl = FAC[roomKind(nama)];
-        if (b.nama === 'Gedung Teknik A' && nomor === '3.02') tpl = tpl.slice(0, 5); // sesuai prototipe
+        if (b.nama === 'Gedung Dekanat FMIPA' && nomor === '1.1') tpl = tpl.slice(0, 5); // sesuai prototipe
         for (const [fn, kat] of tpl) {
           ids.fac[`${b.nama}|${nomor}|${fn}`] = Number(insF.run(rid, fn, kat, 'Baik').lastInsertRowid);
         }
@@ -222,7 +223,7 @@ export function generateSchedule(db, { days = 14, from = new Date() } = {}) {
       for (const room of rooms) {
         const rnd = mulberry32(room.id_ruangan * 100003 + Math.floor(date.getTime() / 86400000));
         const kind = roomKind(room.nama_ruangan);
-        const isFixed = room.nama_gedung === 'Gedung Teknik A' && room.nomor_ruangan === '3.02';
+        const isFixed = room.nama_gedung === 'Gedung Dekanat FMIPA' && room.nomor_ruangan === '1.1';
         let entries = []; // {s, e, ket} dalam menit
 
         if (isFixed) {

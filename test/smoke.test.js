@@ -49,10 +49,10 @@ const mhs = () => asUser('2508561005', 'mahasiswa123');
 const adm = () => asUser('admin@unud.ac.id', 'admin123');
 const tek = () => asUser('wayan.sudarma@unud.ac.id', 'teknisi123');
 
-// Fasilitas yang bebas laporan aktif di Gedung Teknik A, Ruang Kuliah 3.03
+// Fasilitas yang bebas laporan aktif di Gedung Dekanat FMIPA, Ruang 1.3
 const freeFacility = () => db.prepare(
   `SELECT f.id_fasilitas, f.nama_fasilitas FROM fasilitas f JOIN ruangan r ON r.id_ruangan = f.id_ruangan JOIN gedung g ON g.id_gedung = r.id_gedung
-    WHERE g.nama_gedung = 'Gedung Teknik A' AND r.nomor_ruangan = '3.03' AND f.nama_fasilitas = 'Proyektor'`).get();
+    WHERE g.nama_gedung = 'Gedung Dekanat FMIPA' AND r.nomor_ruangan = '1.3' AND f.nama_fasilitas = 'Proyektor'`).get();
 
 const state = {};
 
@@ -80,11 +80,11 @@ test('logout menghapus sesi; tanpa login semua API ditolak (401)', async () => {
 test('UT-02 daftar gedung lalu ruangan pada gedung terpilih', async () => {
   const c = await mhs();
   const g = (await c.get('/api/buildings')).data;
-  assert.equal(g.length, 6);
-  const teknikA = g.find((x) => x.nama_gedung === 'Gedung Teknik A');
-  assert.equal(teknikA.jumlah_ruangan, 12);
+  assert.equal(g.length, 8);
+  const teknikA = g.find((x) => x.nama_gedung === 'Gedung Dekanat FMIPA');
+  assert.equal(teknikA.jumlah_ruangan, 13);
   const det = (await c.get(`/api/buildings/${teknikA.id_gedung}`)).data;
-  assert.equal(det.ruangan.length, 12);
+  assert.equal(det.ruangan.length, 13);
   assert.equal((await c.get('/api/buildings/9999')).status, 404);
 });
 
@@ -98,8 +98,8 @@ test('UT-03 detail ruangan: status, jadwal, dan fasilitas sesuai data', async ()
     assert.ok(Array.isArray(d.jadwal) && d.jadwal.length > 0, `jadwal ${status}`);
     assert.ok(d.fasilitas.length > 0);
   }
-  // Ruang Kuliah 3.02 mengikuti prototipe: 5 fasilitas dan jadwal tetap
-  const r302 = db.prepare(`SELECT r.id_ruangan FROM ruangan r JOIN gedung g USING (id_gedung) WHERE g.nama_gedung='Gedung Teknik A' AND r.nomor_ruangan='3.02'`).get();
+  // Ruang 1.1 Dekanat FMIPA mengikuti prototipe: 5 fasilitas dan jadwal tetap
+  const r302 = db.prepare(`SELECT r.id_ruangan FROM ruangan r JOIN gedung g USING (id_gedung) WHERE g.nama_gedung='Gedung Dekanat FMIPA' AND r.nomor_ruangan='1.1'`).get();
   const d = (await c.get(`/api/rooms/${r302.id_ruangan}`)).data;
   assert.deepEqual(d.fasilitas.map((f) => f.nama_fasilitas), ['Proyektor', 'AC split', 'Papan tulis', 'Stop kontak', 'Kursi kuliah']);
   assert.deepEqual(d.jadwal.filter((j) => j.type === 'jadwal').map((j) => j.keterangan), ['Pemrograman Web', 'Basis Data', 'Rekayasa Perangkat Lunak']);
